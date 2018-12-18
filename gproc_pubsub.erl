@@ -1,4 +1,4 @@
--module( gproc_pubsub_wrapper ).
+-module( gproc_pubsub ).
 -author( "Igor Clark <igor@igorclark.net>" ).
 
 -export( [
