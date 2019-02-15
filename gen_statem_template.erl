@@ -112,39 +112,39 @@ code_change( _OldVsn, StateName, Data, _Extra ) ->
 
 %%	e.g.:
 %%
-%%	% handle a specific cast received in first_state mode
-%%	first_state( cast, CastMsg, Data ) ->
-%%		% do thing with CastMsg
+%%	% handle a specific cast (async) received in first_state mode
+%%	first_state( cast, Event, Data ) ->
+%%		% do thing with Event
 %%		{ keep_state, Data };
 %%	
 %%	% pass any other casts received in first_state mode to generic handle_cast below
 %%	first_state( cast, Event, Data ) ->
 %%		handle_cast( Event, Data );
 %%	
-%%	% handle a specific call received in first_state mode
+%%	% handle a specific call (sync) received in first_state mode
 %%	first_state( { call, From }, Event, Data ) ->
 %%		% do thing with Event
-%%		{ keep_state, Data [ { reply, From, Reply } ] };
+%%		{ keep_state, Data [ { reply, From, Reply } ] }.
 %%	
 %%	% pass any call in second_state to generic handle_call below
 %%	second_state( { call, From }, Event, Data ) ->
-%%		handle_call( { call, From }, Event, Data ).
+%%		handle_call( { call, From }, Event, Data );
 %%	
 %%	% pass any erlang messages in second_state to generic handle_info below
 %%	second_state( info, Event, Data ) ->
 %%		handle_info( Event, Data ).
 %%	
-%%	% handle a specific erlang message received in first_state mode
+%%	% handle a specific erlang message received in third_state mode & transition back
 %%	third_state( info, SpecificMsg, Data ) ->
-%%		io:format( "handling specific msg in third_state~n" ),
-%%		{ keep_state, Data };
-%%	
+%%		io:format( "handling specific msg ~p in third_state~n", [ SpecificMsg ] ),
+%%		{ next_state, first_state, Data }.
+%%
 
 %% ------------------------------------------------------------------
 %% generic all-state event-handler function definitions
 %% ------------------------------------------------------------------
 
-%% handle any call passed in from other modes' receiver functions
+%% handle any sync call passed in from other modes' receiver functions
 handle_call( { call, From }, Event, Data ) ->
 	error_logger:info_msg(
 		"~p OOB handle_call(~p)",
@@ -154,7 +154,7 @@ handle_call( { call, From }, Event, Data ) ->
 
 %% ------------------------------------------------------------------
 
-%% handle any cast passed in from other modes' receiver functions
+%% handle any async cast passed in from other modes' receiver functions
 handle_cast( Event, Data ) ->
 	error_logger:info_msg(
 		"~p OOB handle_cast(~p)",
@@ -164,7 +164,7 @@ handle_cast( Event, Data ) ->
 
 %% ------------------------------------------------------------------
 
-%% handle any info received directly as OOB
+%% handle any erlang info message received directly as OOB
 handle_info( Event, Data ) ->
 	error_logger:info_msg(
 		"~p OOB handle_info(~p)",
