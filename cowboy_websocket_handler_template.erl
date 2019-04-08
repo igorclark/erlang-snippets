@@ -126,7 +126,7 @@ websocket_info( { text, Msg }, State ) when is_atom( Msg ) ->
 	{ reply, { text, BinaryMsg }, State };
 
 websocket_info( _Info, State ) ->
-	error_logger:debug_msg( "~p ~p got OOB info msg: ~p~n", [ ?MODULE, self(), _Info ] ),
+	error_logger:info_msg( "~p ~p got OOB info msg: ~p~n", [ ?MODULE, self(), _Info ] ),
 	{ ok, State }.
  
 %% ------------------------------------------------------------------
