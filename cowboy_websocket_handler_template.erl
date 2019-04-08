@@ -20,7 +20,7 @@
 %%	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 %%	SOFTWARE.
 
--module( nest_control_ws_handler ).
+-module( cowboy_websocket_ws_handler ).
 -author( "Igor Clark <igor@igorclark.net>" ).
 
 %% ------------------------------------------------------------------
