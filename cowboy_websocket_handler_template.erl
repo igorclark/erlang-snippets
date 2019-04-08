@@ -86,7 +86,7 @@ websocket_init( State ) ->
 %% receive messages from the websocket client
 %% ------------------------------------------------------------------
 
-websocket_handle( _Data, State ) ->
+websocket_handle( Msg, State ) ->
 
 	case parse_ws_msg( Msg ) of
 
@@ -126,7 +126,7 @@ websocket_info( { text, Msg }, State ) when is_atom( Msg ) ->
 	{ reply, { text, BinaryMsg }, State };
 
 websocket_info( _Info, State ) ->
-	lager:debug( "~p ~p got OOB info msg: ~p~n", [ ?MODULE, self(), _Info ] ),
+	error_logger:debug_msg( "~p ~p got OOB info msg: ~p~n", [ ?MODULE, self(), _Info ] ),
 	{ ok, State }.
  
 %% ------------------------------------------------------------------
@@ -145,7 +145,7 @@ parse_ws_msg( Msg ) ->
 
 		{ error, { _, invalid_json } } ->
 
-			lager:warning(
+			error_logger:warning_msg(
 				"~p websocket ~p sent invalid json",
 				[ ?MODULE, self() ]
 			),
@@ -157,7 +157,7 @@ parse_ws_msg( Msg ) ->
 			truncated_json;
 
 		_:Reason ->
-			lager:warning(
+			error_logger:warning_msg(
 				"~p ~p error ~p while parsing msg received from websocket: ~p~n",
 				[ ?MODULE, self(), Reason, Msg ]
 			),
